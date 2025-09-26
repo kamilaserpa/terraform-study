@@ -103,3 +103,12 @@ provider "aws" {
   region = "sa-east-1"
 }
 ```
+
+Se esse arquivo for corrompido ou perdido o provider vai perder a referência e entender que essa seria a primeira vez que os recursos estão sendo criados. Então se já houverem recursos com os mesmos nomes dá conflito e recursos podem ser perdidos.
+
+## Backend
+Criamos o recurso [backend S3](https://developer.hashicorp.com/terraform/language/backend/s3) que armazena o estado (tfstate) em um determinado bucket. O conteúdo do arquivo `terraform.tfstate` não ficará mais armazenado localmente, mas sim no bucket na WS S3. 
+
+Quando inicializamos o terraform o backend é inicializado, por isso precisamos executar `$ terraform init -reconfigure`, plan e apply para implantar o backend. Podemos verificar que o conteúdo do arquivo local foi apagado e armazenado no S3.
+
+![](/assets/backend-tfstate-s3.png)
