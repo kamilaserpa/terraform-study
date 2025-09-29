@@ -112,3 +112,39 @@ Criamos o recurso [backend S3](https://developer.hashicorp.com/terraform/languag
 Quando inicializamos o terraform o backend é inicializado, por isso precisamos executar `$ terraform init -reconfigure`, plan e apply para implantar o backend. Podemos verificar que o conteúdo do arquivo local foi apagado e armazenado no S3.
 
 ![](/assets/backend-tfstate-s3.png)
+
+
+## Principais comandos
+ - `terraform init`
+   - Primeiro a ser executado em um diretório terraform. Baixa os providers, configura o back-end para armazenar o estado, seja local ou remoto, verifica dependências e compatibilidade entre versões.
+ - `terraform validate`
+   - Verifica se o código de configuração (.tf files) está correto em termos de sintaxe e estrutura
+ - `terraform plan`
+   - gera e visualiza um plano de execução, mostra o que será alterado sem fazer alterações reais
+   - `terraform plan -destroy -target="aws_s3_bucket.bucket-aula"` simula resultado da destruição de um recurso específico.
+ - `terraform apply`
+   - Executa o plano gerado pelo plan. Provisiona novos recursos, modifica os existentes, atualiza o arquivo tfstate. Solicita confirmação antes de executar, a menos que o par
+   âmetro `-auto-approve`seja usado.
+   - `-target` aplica apenas a recursos específicos
+ - terraform show
+   - Exibe informações detalhadas sobre o estado da infraestrutura, confirme o arquivo tfstate. Lista recursos gerenciados pelo terraform, com seus atributos e valores.
+ - `terraform destroy`
+   - Identifica todos os recursos do tfstate e emite comandos para destruie cada recurso de firna segura e ordenada.
+ - `terraform output`
+   - lê o arquivo tfstate e retorna os valores das variáveis do bloco `output`
+ - `terraform refresh`
+   - compara o estado registrado com a infraestrutura real e atualiza o arquivo tfstate para refletir o estado atual.
+   - É usado quando mudanças foram feitas diretamente na infraestrutura para garantir que o estado reflita a realidade antes de executar novos planos.
+ - `terraform state`
+   - Permite alterar o estado diretamente, com comandos como mv, rm e list. É útil para reorganizar ou remover recursos sem alterar a infraestrutura
+   - Usado para resolver problemas de estado corrompido e ao refatorar a configuração
+ - `terraform fmt`
+   - Formata o código terraform de acordo com os padrões do código HCL
+ - `terraform graph`
+   - Gera um gráfico das dependências entre recursos, cria uma representação em formato DOT.
+   - Necessário download de ferramentas como Graphviz
+   - Usado para entender a ordem de criação dos recursos e mapear dependências complexas
+ - `terraform import`
+   - Permite adicionar recursos existentes, criados anteriormente sem o terraform, à gestão do terraform. Atualiza o estado para incluir o recurso importado.
+   - Usado para migrar recursos existentes para o gerenciamento do Terraform e durante integração de infraestrutura legada.
+  
