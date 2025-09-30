@@ -10,5 +10,12 @@
 *.tfstate.*
 *.tfvars
 *.tfvars.json
+*.tfvars.local
+secrets.tfvars
 .terraformrc
 terraform.rc
+
+# Environment variables
+.env
+.env.local
+.env.*.local

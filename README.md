@@ -148,3 +148,74 @@ Quando inicializamos o terraform o backend é inicializado, por isso precisamos 
    - Permite adicionar recursos existentes, criados anteriormente sem o terraform, à gestão do terraform. Atualiza o estado para incluir o recurso importado.
    - Usado para migrar recursos existentes para o gerenciamento do Terraform e durante integração de infraestrutura legada.
   
+## Variables
+
+Utilizamos [variables](https://developer.hashicorp.com/terraform/language/block/variable#background) para parametrizar configurações, tornando os módulos reusáveis e dinâmicos.
+O recurso do terraform precisa ter um label único.
+
+O bloco `variable` suporta os argumentos:
+ - variable "<LABEL>"   block
+ - type   type constraint
+ - default   expression
+ - description   string
+ - validation   block
+ - condition   expression
+ - error_message   string
+ - sensitive   boolean
+ - nullable   boolean
+ - ephemeral   boolean
+  
+
+### Definindo valores sensíveis
+Não é recomendado deixar valores sensíveis no código, como senhas por exemplo. 
+
+1. Variáveis de ambiente
+
+Podemos definir variáveis de ambiente com o prefixo `TF_VAR_`.
+No arquivo `.tf`: O nome da variável é o sulfixo, no exemplo abaixo "aws_access_key" (sem o TF_VAR_).
+
+
+```shell
+export TF_VAR_aws_access_key="AKIAIOSFODNN7EXAMPLE"
+export TF_VAR_aws_secret_key="wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+export TF_VAR_bucket_name="bucket-name"
+```
+
+2. AWS CLI (MELHOR PRÁTICA)
+
+Outra opção é usar o AWS CLI (MELHOR PRÁTICA), pois o Terraform automaticamente detecta e usa as credenciais do AWS CLI.
+
+```shell
+# 1. Configurar AWS CLI uma vez
+aws configure
+```
+
+3. Arquivos locais não commitados
+
+Adicionar estes arquivos ao .gitignore.
+Arquivo `terraform.tfvars.local`, que pode conter valores sensíveis mais configurações locais do desenvolvedor.
+
+```hcl
+# terraform.tfvars.local (já está no .gitignore)
+aws_access_key = "AKIAIOSFODNN7EXAMPLE"
+aws_secret_key = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+database_password = "minhasenha123"
+```
+
+Arquivo `secrets.tfvars`, usado apenas para valores sensíveis e secretos.
+
+```hcl
+# secrets.tfvars (já está no .gitignore)
+aws_access_key = "AKIAIOSFODNN7EXAMPLE"
+aws_secret_key = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+database_password = "minhasenha123"
+```
+
+Para aplicar:
+```bash
+# Usar o arquivo específico
+terraform plan -var-file="terraform.tfvars.local"
+# ou
+terraform plan -var-file="secrets.tfvars"
+terraform apply -var-file="secrets.tfvars"
+```

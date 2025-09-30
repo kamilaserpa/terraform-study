@@ -7,12 +7,13 @@ resource "aws_s3_bucket" "bucket-backend" {
   }
 }
 
-#resource "aws_s3_bucket" "bucket-aula" {
-#  # Using default provider (us-east-1) instead of sp provider (sa-east-1)
-#  bucket = "kamila-lab-test"
-#
-#  tags = {
-#    Name        = "aula2"
-#    Environment = "Develop"
-#  }
-#}
+resource "aws_s3_bucket" "bucket-aula" {
+# Using default provider (us-east-1) instead of sp provider (sa-east-1)
+  bucket = var.bucket_name
+  tags = var.tags_dev
+}
+
+resource "aws_s3_bucket" "bucket-aula-3" {
+  bucket = "${var.bucket_name}-3"
+  tags = var.tags_prod
+}
