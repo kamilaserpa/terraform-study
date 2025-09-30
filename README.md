@@ -204,7 +204,7 @@ database_password = "minhasenha123"
 
 Arquivo `secrets.tfvars`, usado apenas para valores sensíveis e secretos.
 
-```hcl
+```shell
 # secrets.tfvars (já está no .gitignore)
 aws_access_key = "AKIAIOSFODNN7EXAMPLE"
 aws_secret_key = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
@@ -219,3 +219,37 @@ terraform plan -var-file="terraform.tfvars.local"
 terraform plan -var-file="secrets.tfvars"
 terraform apply -var-file="secrets.tfvars"
 ```
+
+## Output
+
+Output expõe valores dos recursos criados para outros módulos ou para o usuário após `terraform apply`, de recursos gerenciados pelo terraform local, assim nós capturamos o valor do console da AWS via código.
+Outputs aparecem no final do terraform apply e podem ser consultados com terraform output.
+No exemplo o ARN é o identificador único global de recursos AWS.
+
+```json
+output "bucket_arn" {
+  value = aws_s3_bucket.bucket-aula.arn
+  description = "ARN do bucket S3"
+}
+```
+
+### Datasource
+Data Source busca informações de recursos existentes na AWS (não cria novos recursos), acessa recursos que não foram criados pelo terraform.
+
+Por exemplo, pode-se buscar AMI mais recente, pois é um valor mutável:
+
+```json
+data "aws_ami" "amazon_linux" {
+  most_recent = true
+  owners      = ["amazon"]
+  
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-hvm-*-x86_64-gp2"]
+  }
+}
+```
+
+No arquivo `.tf` podemos utilizar o valor do id do AMI por exemplo: `data.aws_ami.amazon_linux.id`.
+O `$ terraform plan` exibe os atributos que podemos extrair do dado.
+Precisamos de informações simples, que possamos lembrar, e únicas para que possamos buscar um recurso específico do provider.

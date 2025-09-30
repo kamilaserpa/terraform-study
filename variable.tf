@@ -70,38 +70,6 @@ variable "region_sp" {
     default = "sa-east-1"
 }
 
-# =============================================================================
-# AWS CREDENTIALS VARIABLES
-# =============================================================================
-
-variable "aws_access_key" {
-  description = "AWS Access Key ID"
-  type        = string
-  sensitive   = true
-  default     = ""
-  
-  validation {
-    condition     = length(var.aws_access_key) >= 16 || var.aws_access_key == ""
-    error_message = "AWS Access Key deve ter pelo menos 16 caracteres."
-  }
+variable "instance_type"{
+    default = “t2.micro”
 }
-
-variable "aws_secret_key" {
-  description = "AWS Secret Access Key"
-  type        = string
-  sensitive   = true
-  default     = ""
-  
-  validation {
-    condition     = length(var.aws_secret_key) >= 20 || var.aws_secret_key == ""
-    error_message = "AWS Secret Key deve ter pelo menos 20 caracteres."
-  }
-}
-
-variable "aws_session_token" {
-  description = "AWS Session Token (para credenciais temporárias)"
-  type        = string
-  sensitive   = true
-  default     = ""
-}
-

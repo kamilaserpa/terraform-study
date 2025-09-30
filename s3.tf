@@ -17,3 +17,8 @@ resource "aws_s3_bucket" "bucket-aula-3" {
   bucket = "${var.bucket_name}-3"
   tags = var.tags_prod
 }
+
+resource "aws_s3_bucket" "bucket-fiap_previouslly_created"" {
+  bucket = "${data.aws_s3_bucket.fiap_previouslly_created}-3"
+  tags = var.tags_prod
+}
