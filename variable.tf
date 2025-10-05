@@ -20,8 +20,7 @@ variable "region_default" {
   
   validation {
     condition = contains([
-      "us-east-1", "us-west-2", "eu-west-1", 
-      "ap-southeast-1", "sa-east-1"
+      "us-east-1"
     ], var.region_default)
     error_message = "A região deve ser uma das regiões AWS suportadas."
   }
@@ -41,7 +40,7 @@ variable "tags_dev" {
   description = "Tags padrão para recursos de desenvolvimento"
   type        = map(string)
   default = {
-    Name        = "${local.name}-aula2"
+    Name        = "aula2"
     Environment = "Development"
     Project     = "terraform-study"
     Owner       = "kamila"
@@ -62,14 +61,6 @@ variable "tags_prod" {
   }
 }
 
-variable "region_default" {
-    default = "us-east-1"
-}
-
-variable "region_sp" {
-    default = "sa-east-1"
-}
-
-variable "instance_type"{
-    default = “t2.micro”
+variable "instance_type" {
+    default = "t2.micro"
 }

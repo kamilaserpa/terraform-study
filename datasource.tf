@@ -14,7 +14,7 @@ data "aws_ami" "ubuntu" {
   owners = ["099720109477"] # Canonical
 }
 
-# Capturar o arn de um bucket no provider que gnão foi criado pelo terraform
+# Capturar o arn de um bucket no provider que não foi criado pelo terraform
 data "aws_s3_bucket" "fiap_previouslly_created" {
     bucket = "bucket-fiap-created"
 }

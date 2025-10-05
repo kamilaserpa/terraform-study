@@ -151,7 +151,7 @@ Quando inicializamos o terraform o backend é inicializado, por isso precisamos 
 ## Variables
 
 Utilizamos [variables](https://developer.hashicorp.com/terraform/language/block/variable#background) para parametrizar configurações, tornando os módulos reusáveis e dinâmicos.
-O recurso do terraform precisa ter um label único.
+O recurso do terraform precisa ter um label único. Variables representam entrada de dados (de fora do módulo). Não deveria depender de nada interno, porque o valor pode vir de `tfvars`, `CLI` (-var), ou até de outro módulo.
 
 O bloco `variable` suporta os argumentos:
  - variable "<LABEL>"   block
@@ -257,9 +257,13 @@ O `$ terraform plan` exibe os atributos que podemos extrair do dado.
 Precisamos fornecer informações simples, que possamos lembrar, e únicas para que possamos filtrar um recurso específico do provider e nõa uma lista.
 
 Poderemos verificar em AWS > EC2 > Instances a instancia criada.
+![EC2 criada com terraform](/assets/ec2-terraform.png)
+
+No exemplo utilizamos o nome de um bucket previamente criado fora do terraform para criar um novo bucket.
+![Buckets criados com terraform](/assets/buckets-terraform.png)
 
 ## Locals
-Dados definidos em arquivos locais do terraform, diferente das variáveis que podem ser definidas em um arquivo `.tf`, por um arquivo `terraform.tfvars` ou até mesmo por linha de comando.
+Dados definidos em arquivos locais do terraform, diferente das variáveis que podem ser definidas em um arquivo `.tf`, por um arquivo `terraform.tfvars` ou até mesmo por linha de comando. Documentation https://developer.hashicorp.com/terraform/language/block/locals.
 Sãos dados bons para utilizar valores fixos.
 
 Vamos destruir a EC2 criada com `$ terraaform apply -destroy -target="aws_instance.web"` para recriarmos ela utilizando valores locais.
@@ -270,5 +274,8 @@ locals {
     school = "postech"
 }
 # utilização
-"${local.name}-aula2"
+"${local.name}"
 ```
+
+Não é possível usar local dentro de um bloco `variable`, mas é comum interpolar/ acessar variables em locals.
+Local realiza a construção de valores derivados. Pode usar variables, pode concatenar strings, pode aplicar funções, etc.

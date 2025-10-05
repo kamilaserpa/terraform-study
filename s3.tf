@@ -18,9 +18,9 @@ resource "aws_s3_bucket" "bucket-aula-3" {
   tags = var.tags_prod
 }
 
-# Cria um recurso apontando para o bucket não criado pelo terraform fiap_previouslly_created
+# Cria um outro bucket uatilizando a propriedade do nome de um bucket não criado pelo terraform, já existente fiap_previouslly_created
 # adicionando apenas um sulfixo "-3"
 resource "aws_s3_bucket" "bucket-fiap_previouslly_created" {
-  bucket = "${data.aws_s3_bucket.fiap_previouslly_created}-3"
+  bucket = "${data.aws_s3_bucket.fiap_previouslly_created.bucket}-2"
   tags = var.tags_prod
 }
