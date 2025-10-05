@@ -6,7 +6,7 @@ variable "bucket_name" {
   description = "Nome do bucket S3 para desenvolvimento"
   type        = string
   default     = "kamila-lab-test"
-  
+
   validation {
     condition     = length(var.bucket_name) >= 3 && length(var.bucket_name) <= 63
     error_message = "O nome do bucket deve ter entre 3 e 63 caracteres."
@@ -17,7 +17,7 @@ variable "region_default" {
   description = "Região AWS padrão para recursos"
   type        = string
   default     = "us-east-1"
-  
+
   validation {
     condition = contains([
       "us-east-1"
@@ -62,5 +62,5 @@ variable "tags_prod" {
 }
 
 variable "instance_type" {
-    default = "t2.micro"
+  default = "t2.micro"
 }

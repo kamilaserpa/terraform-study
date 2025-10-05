@@ -9,7 +9,7 @@ terraform {
 
 # Configure the AWS Provider
 provider "aws" {
-  region     = var.region_default
+  region = var.region_default
 }
 
 #provider "aws" {

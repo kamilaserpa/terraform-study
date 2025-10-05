@@ -16,7 +16,7 @@ Instalação: https://developer.hashicorp.com/terraform/tutorials/aws-get-starte
 ## Declarando o provider
 Podemos ver na [documentação](https://registry.terraform.io/browse/providers) o exemplo de criação de vários providers.
 
-Para declarar um providder AWS criamos o arquivo [provider.tf](/provider.tf) com o conteúdo capturado da documentação (https://registry.terraform.io/providers/hashicorp/aws/latest/docs#example-usage):
+Para declarar um providder AWS criamos o arquivo [/terraform-project-base/provider.tf](/terraform-project-base/provider.tf) com o conteúdo capturado da documentação (https://registry.terraform.io/providers/hashicorp/aws/latest/docs#example-usage):
 ```json
 # provider.tf
 terraform {
@@ -42,7 +42,7 @@ $ terraform show
 
 ## Bucket
 
-Vamos criar um bucket S3, será declarado no arquivo [s3.tf](/s3.tf).
+Vamos criar um bucket S3, será declarado no arquivo [terraform-project-base/s3.tf](/terraform-project-base/s3.tf).
 Podemos declarar mais de um bucket no arquivo, porém o nome do resource deve ser único, no exemplo "bucket", :
 ```json
 //s3.tf
@@ -68,7 +68,7 @@ O comando [destroy](https://developer.hashicorp.com/terraform/cli/commands/destr
 `$ terraform apply -destroy`.
 
 ## Tfstage
-[terraform.tfstate](/terraform.tfstate) é um arquivo que mantém o estado, o versionamento do que foi criado anteriormente no provedor e informações sensíveis. Após o “apply” os arquivos terraform.tfstate e terraform.tfstate.backup sãqo criados, este último com informações sensíveis.
+[terraform.tfstate](/terraform-project-base/terraform.tfstate) é um arquivo que mantém o estado, o versionamento do que foi criado anteriormente no provedor e informações sensíveis. Após o “apply” os arquivos terraform.tfstate e terraform.tfstate.backup sãqo criados, este último com informações sensíveis.
 É importante manter esse arquivo para manter a administração de estruturas já criadas no provider.
 
 ### tfstate no S3
@@ -96,7 +96,7 @@ resource "aws_s3_bucket" "bucket-aula" {
 }
 ```
 
-No arquivo provider.tf editamos para acessar a regiao de São Paulo. COmo essa região é paga, aqui foca o código de exemplo, porém vamos continuar utilizando us-east-1:
+No arquivo terraform-project-base/provider.tf editamos para acessar a regiao de São Paulo. Como essa região é paga, aqui foca o código de exemplo, porém vamos continuar utilizando us-east-1:
 ```json
 provider "aws" {
   alias = "sp"
@@ -252,7 +252,7 @@ data "aws_ami" "amazon_linux" {
 }
 ```
 
-No arquivo `.tf` podemos utilizar o valor do id do AMI, por exemplo: `data.aws_ami.amazon_linux.id` em [ec2.tf](./ec2.tf).
+No arquivo `.tf` podemos utilizar o valor do id do AMI, por exemplo: `data.aws_ami.amazon_linux.id` em [terraform-project-base/ec2.tf](/terraform-project-base/ec2.tf).
 O `$ terraform plan` exibe os atributos que podemos extrair do dado.
 Precisamos fornecer informações simples, que possamos lembrar, e únicas para que possamos filtrar um recurso específico do provider e nõa uma lista.
 
@@ -302,5 +302,26 @@ module "ec2-instance" {
 }
 ```
 
-Exemplos de módulos disponíveis:
- - 
+### Criando módulo
+
+Para utilizar um módulo local, criamos um arquivo `main.tf` apontando o local de declaração do módulo.
+Exemplo em [terraform-project-modules/main.tf](./terraform-project-modules/main.tf), substituindo as propriedades sem valor declarado no módulo.
+
+```json
+module "ec2" {
+  source = "../modules/ec2"
+
+  ami = data.aws_ami.ubuntu.id
+  instance_name = var.instance_name
+}
+
+module "s3" {
+    source = "../modules/s3"
+    bucket_name = "fiap-modules-terraform"
+}
+```
+Assim, para criar um EC2 ou um bucket S3, podemos apenas utilizar esses módulos e passar as variáveis, tornando bem mais prático e reutilizável.
+
+Precisamos executar `terraform init -reconfigure`, e `apply`
+
+![EC2 criado com módulos](/assets/ec2-s3-modules.png)
