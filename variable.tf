@@ -41,7 +41,7 @@ variable "tags_dev" {
   description = "Tags padrão para recursos de desenvolvimento"
   type        = map(string)
   default = {
-    Name        = "aula2"
+    Name        = "${local.name}-aula2"
     Environment = "Development"
     Project     = "terraform-study"
     Owner       = "kamila"

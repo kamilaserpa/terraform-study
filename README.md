@@ -233,10 +233,12 @@ output "bucket_arn" {
 }
 ```
 
-### Datasource
-Data Source busca informações de recursos existentes na AWS (não cria novos recursos), acessa recursos que não foram criados pelo terraform.
+## Datasource
+Data Source busca informações de recursos existentes na AWS (não cria novos recursos), acessa recursos que não foram criados pelo terraform para que possamos capturar informações desses recursos e utilizá-las.
 
-Por exemplo, pode-se buscar AMI mais recente, pois é um valor mutável:
+Por exemplo, pode-se buscar AMI mais recente ([terraform.io/data-sources/ami](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami)), pois é um valor mutável:
+
+Veja https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance.
 
 ```json
 data "aws_ami" "amazon_linux" {
@@ -250,6 +252,23 @@ data "aws_ami" "amazon_linux" {
 }
 ```
 
-No arquivo `.tf` podemos utilizar o valor do id do AMI por exemplo: `data.aws_ami.amazon_linux.id`.
+No arquivo `.tf` podemos utilizar o valor do id do AMI, por exemplo: `data.aws_ami.amazon_linux.id` em [ec2.tf](./ec2.tf).
 O `$ terraform plan` exibe os atributos que podemos extrair do dado.
-Precisamos de informações simples, que possamos lembrar, e únicas para que possamos buscar um recurso específico do provider.
+Precisamos fornecer informações simples, que possamos lembrar, e únicas para que possamos filtrar um recurso específico do provider e nõa uma lista.
+
+Poderemos verificar em AWS > EC2 > Instances a instancia criada.
+
+## Locals
+Dados definidos em arquivos locais do terraform, diferente das variáveis que podem ser definidas em um arquivo `.tf`, por um arquivo `terraform.tfvars` ou até mesmo por linha de comando.
+Sãos dados bons para utilizar valores fixos.
+
+Vamos destruir a EC2 criada com `$ terraaform apply -destroy -target="aws_instance.web"` para recriarmos ela utilizando valores locais.
+
+```json
+locals {
+    name = "fiap"
+    school = "postech"
+}
+# utilização
+"${local.name}-aula2"
+```

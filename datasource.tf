@@ -1,18 +1,20 @@
-data “aws_ami” “latest_amazon_linux” {
-    most_recent = true
-    
-    filter {
-        name = “name”
-        values = [“amzn2-ami-hvm-*-x86_64-gp2”]
-    }
-    filter {
-        name = "virtualization-type"
-        values = [“hvm”]
-    }
+data "aws_ami" "ubuntu" {
+  most_recent = true
 
-    owners = [“137112412989”] # AWS ID oficial para AMIs da Amazon
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  owners = ["099720109477"] # Canonical
 }
 
+# Capturar o arn de um bucket no provider que gnão foi criado pelo terraform
 data "aws_s3_bucket" "fiap_previouslly_created" {
-    bucket = "fiap-created"
+    bucket = "bucket-fiap-created"
 }
