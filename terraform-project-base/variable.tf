@@ -2,15 +2,33 @@
 # GENERAL VARIABLES
 # =============================================================================
 
+# REGEX
 variable "bucket_name" {
   description = "Nome do bucket S3 para desenvolvimento"
-  type        = string
-  default     = "kamila-lab-test"
+  default     = "kamila-lab-2025"
+}
 
-  validation {
-    condition     = length(var.bucket_name) >= 3 && length(var.bucket_name) <= 63
-    error_message = "O nome do bucket deve ter entre 3 e 63 caracteres."
-  }
+output "regex_bucket" {
+  value = regex("kamila-lab-(\\d+)", var.bucket_name)
+}
+
+# REGEX_ALL
+variable "bucket_name_list" {
+  default = "kamila-lab-2025,kamila-lab-2026,kamila-lab-2027"
+}
+
+output "regex_bucket" {
+  value = regexall("kamila-lab-(\\d+)", var.bucket_name_list)
+}
+
+# LENGTH
+variable "bucket_name_length" {
+  default = "kamila-aula-fiap-2025-prod"
+}
+
+# Obriga que um padrão de nome seja respoeitado na criação de um bucket por exemplo
+output "regex_bucket" {
+  value = length(regexall("^[a-z0-9]+-(aula|live)+-(fiap|alura)+-[0-9]+-(prod|stage|dev)$", var.bucket_name_length))
 }
 
 variable "region_default" {

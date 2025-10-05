@@ -7,11 +7,35 @@ Os usuários definem e fornecem infraestrutura de data center usando uma linguag
 
 Por exemplo, no lugar de clicar no console da AWS para criar uma VPC, EC2, S3, podemos escrever código com essas configurações e aplicá-lo.
 
+## Índice
+
+- [Terraform](#terraform)
+  - [Índice](#índice)
+  - [Documentation](#documentation)
+  - [Declarando o provider](#declarando-o-provider)
+  - [Bucket](#bucket)
+  - [Tfstage](#tfstage)
+    - [tfstate no S3](#tfstate-no-s3)
+  - [Backend](#backend)
+  - [Principais comandos](#principais-comandos)
+  - [Variables](#variables)
+    - [Definindo valores sensíveis](#definindo-valores-sensíveis)
+  - [Output](#output)
+  - [Datasource](#datasource)
+  - [Locals](#locals)
+  - [Module](#module)
+    - [Criando módulo](#criando-módulo)
+  - [Loops](#loops)
+    - [1. count](#1-count)
+    - [2. for\_each](#2-for_each)
+    - [3. for expression (listas/mapas dentro de locals)](#3-for-expression-listasmapas-dentro-de-locals)
+
+## Documentation
 Terraform documentation: https://registry.terraform.io/providers/hashicorp/aws/latest/docs.
 
 CLI documentation: https://developer.hashicorp.com/terraform/cli .
 
-Instalação: https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli .
+Instalação: https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli.
 
 ## Declarando o provider
 Podemos ver na [documentação](https://registry.terraform.io/browse/providers) o exemplo de criação de vários providers.
@@ -325,3 +349,55 @@ Assim, para criar um EC2 ou um bucket S3, podemos apenas utilizar esses módulos
 Precisamos executar `terraform init -reconfigure`, e `apply`
 
 ![EC2 criado com módulos](/assets/ec2-s3-modules.png)
+
+## Loops
+
+No Terraform não existe “for” ou “while” como em linguagens de programação, mas temos duas construções muito usadas para iterar sobre listas ou mapas:
+
+### 1. count
+
+Cria N cópias de um recurso. Bom para repetição simples.
+Exemplo: criar 3 buckets S3 de uma vez, onde `count.index` vai de 0 até N-1.
+```json
+resource "aws_s3_bucket" "buckets" {
+  count  = 3
+  bucket = "meu-bucket-${count.index}"
+}
+```
+Aqui ele criaria meu-bucket-0, meu-bucket-1, meu-bucket-2.
+
+### 2. for_each
+
+Mais poderoso: permite iterar sobre listas ou mapas.
+Assim você pode usar uma chave para identificar cada recurso.
+
+Exemplo com lista:
+```json
+resource "aws_s3_bucket" "buckets" {
+  for_each = toset(["dev", "staging", "prod"])
+  bucket = "meu-bucket-${each.key}"
+}
+```
+
+Vai criar três buckets: meu-bucket-dev, meu-bucket-staging, meu-bucket-prod. Onde `each.key` é a chave (quando itera set/map) e `each.value` o valor (quando itera lista/mapa).
+
+### 3. for expression (listas/mapas dentro de locals)
+
+Além de count e for_each, você pode criar listas/mapas derivados com expressões for.
+Por exemplo (mapa):
+```
+locals {
+  buckets = ["dev", "staging", "prod"]
+  buckets_tags = { for b in local.buckets : b => "owner-${b}" }
+}
+```
+
+Resultado:
+```
+{
+  dev     = "owner-dev"
+  staging = "owner-staging"
+  prod    = "owner-prod"
+}
+```
+Podemos usar as expressões regulares
