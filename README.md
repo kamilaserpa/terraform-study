@@ -279,3 +279,28 @@ locals {
 
 Não é possível usar local dentro de um bloco `variable`, mas é comum interpolar/ acessar variables em locals.
 Local realiza a construção de valores derivados. Pode usar variables, pode concatenar strings, pode aplicar funções, etc.
+
+## Module
+[Module](https://developer.hashicorp.com/terraform/language/modules) é um recurso que permite encapsular e reutilizar configurações de recursos do terraform. Ele é útil pra ser reutilizável e se quisermos, alterar poucos parâmetros apenas.
+
+Podemos encontrar diversos módulos em https://registry.terraform.io/browse/modules.
+
+Exemplo de modulo de [EC2 instance](https://registry.terraform.io/modules/terraform-aws-modules/ec2-instance/aws/latest) e exemplo de utilização em repositório de código https://github.com/terraform-aws-modules/terraform-aws-ec2-instance/tree/master/examples/complete. 
+Para criarmos um módulo utilizando essa estrutura basta utilizar o trecho em "Provision Instructions", também é possível visualizar resources, inputs e[outputs](https://registry.terraform.io/modules/terraform-aws-modules/ec2-instance/aws/latest#outputs) pro exemplo.
+
+Para executar e realizar os downloads do módulo:
+```bash
+~/terraform-modules$ terraform init
+terraform plan
+terrafom apply
+```
+
+Para utilizar o módulo em outro projeto, basta criar um arquivo `main.tf` e utilizar o módulo:
+```json
+module "ec2-instance" {
+  source = "./terraform-modules"
+}
+```
+
+Exemplos de módulos disponíveis:
+ - 
