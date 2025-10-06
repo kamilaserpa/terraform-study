@@ -29,6 +29,8 @@ Por exemplo, no lugar de clicar no console da AWS para criar uma VPC, EC2, S3, p
     - [1. count](#1-count)
     - [2. for\_each](#2-for_each)
     - [3. for expression (listas/mapas dentro de locals)](#3-for-expression-listasmapas-dentro-de-locals)
+    - [Expressões regex](#expressões-regex)
+    - [Regexall](#regexall)
 
 ## Documentation
 Terraform documentation: https://registry.terraform.io/providers/hashicorp/aws/latest/docs.
@@ -352,7 +354,8 @@ Precisamos executar `terraform init -reconfigure`, e `apply`
 
 ## Loops
 
-No Terraform não existe “for” ou “while” como em linguagens de programação, mas temos duas construções muito usadas para iterar sobre listas ou mapas:
+No Terraform não existe “for” ou “while” como em linguagens de programação, mas temos duas construções muito usadas para iterar sobre listas ou mapas.
+Utilizamos no arquivo [/terraform-project-base/ec2.tf](/terraform-project-base/ec2.tf).
 
 ### 1. count
 
@@ -364,7 +367,8 @@ resource "aws_s3_bucket" "buckets" {
   bucket = "meu-bucket-${count.index}"
 }
 ```
-Aqui ele criaria meu-bucket-0, meu-bucket-1, meu-bucket-2.
+Aqui ele criaria meu-bucket-0, meu-bucket-1, meu-bucket-2. 
+![](/assets/loop-count-ec2.png)
 
 ### 2. for_each
 
@@ -380,6 +384,18 @@ resource "aws_s3_bucket" "buckets" {
 ```
 
 Vai criar três buckets: meu-bucket-dev, meu-bucket-staging, meu-bucket-prod. Onde `each.key` é a chave (quando itera set/map) e `each.value` o valor (quando itera lista/mapa).
+Quando usamos `set` o each.value é igual ao each.key.
+
+Para definir chave e valor com valores diferentes podemos usar o for_each com um mapa:
+```json
+for_each = {
+  dev     = "kamila"
+  staging = "joao"
+  prod    = "maria"
+}
+```
+ - each.key → "dev", "staging", "prod", each.value → "kamila", "joao", "maria"
+
 
 ### 3. for expression (listas/mapas dentro de locals)
 
@@ -401,3 +417,79 @@ Resultado:
 }
 ```
 Podemos usar as expressões regulares
+
+### Expressões regex
+
+### Regexall
+O regexall(pattern, string) aplica uma expressão regular a uma string e retorna uma lista com todas as correspondências.
+Exemplod e uso em [terraform-project-base/ec2.tf](/terraform-project-base/ec2.tf).
+
+```hcl
+output "regex_bucket" {
+  value = regexall("kamila-lab-\\d+", var.bucket_name_list)
+}
+// Resultado
+[
+  "kamila-lab-2025",
+  "kamila-lab-2026",
+  "kamila-lab-2027",
+  "kamila-lab-2019",
+]
+```
+Usando na criação de recursos:
+
+```
+# Variável com lista de buckets separados por vírgula
+variable "bucket_name_list" {
+  default = "kamila-lab-2025,kamila-lab-2026,kamila-lab-2027,kamila-lab-2019"
+}
+
+# Locals: extrai os nomes dos buckets usando regex e transforma em set
+locals {
+  bucket_names = toset(flatten(regexall("kamila-lab-\\d+", var.bucket_name_list)))
+}
+
+# Criação de buckets S3 usando for_each
+resource "aws_s3_bucket" "buckets" {
+  for_each = local.bucket_names
+
+  bucket = each.key
+  tags = {
+    Name = each.key
+  }
+}
+
+# Criação de instâncias EC2 usando os mesmos nomes
+resource "aws_instance" "ec2_for_bucket" {
+  for_each = local.bucket_names
+
+  ami           = "ami-12345678"  # Substitua por AMI válida
+  instance_type = "t2.micro"
+
+  tags = {
+    Name = "ec2-${each.key}"
+  }
+}
+```
+
+É possível verificar com outputs, `terraform output` ou `terraform output bucket_names`.
+<details>
+  <summary>Outputs para verificar os recursos criados com regex</summary>
+
+```json
+# Outputs para verificação
+output "bucket_names" {
+  value = local.bucket_names
+}
+
+output "s3_buckets" {
+  value = [for b in aws_s3_bucket.buckets : b.bucket]
+}
+
+output "ec2_instances" {
+  value = [for i in aws_instance.ec2_for_bucket : i.tags["Name"]]
+}
+```
+</details>
+
+

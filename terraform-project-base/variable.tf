@@ -5,31 +5,33 @@
 # REGEX
 variable "bucket_name" {
   description = "Nome do bucket S3 para desenvolvimento"
-  default     = "kamila-lab-2025"
+  default     = "kamila-lab"
 }
 
+/*
 output "regex_bucket" {
-  value = regex("kamila-lab-(\\d+)", var.bucket_name)
+ value = regex("kamila-lab-(\\d+)", var.bucket_name)
 }
 
 # REGEX_ALL
 variable "bucket_name_list" {
-  default = "kamila-lab-2025,kamila-lab-2026,kamila-lab-2027"
+ default = "kamila-lab-2025,kamila-lab-2026,kamila-lab-2027,kamila-lab-2019"
 }
 
 output "regex_bucket" {
-  value = regexall("kamila-lab-(\\d+)", var.bucket_name_list)
+  value = regexall("kamila-lab-\\d+", var.bucket_name_list)
 }
 
 # LENGTH
 variable "bucket_name_length" {
-  default = "kamila-aula-fiap-2025-prod"
+ default = "kamila-aula-fiap-2025-prod"
 }
 
 # Obriga que um padrão de nome seja respoeitado na criação de um bucket por exemplo
 output "regex_bucket" {
-  value = length(regexall("^[a-z0-9]+-(aula|live)+-(fiap|alura)+-[0-9]+-(prod|stage|dev)$", var.bucket_name_length))
+ value = length(regexall("^[a-z0-9]+-(aula|live)+-(fiap|alura)+-[0-9]+-(prod|stage|dev)$", var.bucket_name_length))
 }
+*/
 
 variable "region_default" {
   description = "Região AWS padrão para recursos"
