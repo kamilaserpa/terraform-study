@@ -31,6 +31,7 @@ Por exemplo, no lugar de clicar no console da AWS para criar uma VPC, EC2, S3, p
     - [3. for expression (listas/mapas dentro de locals)](#3-for-expression-listasmapas-dentro-de-locals)
     - [Expressões regex](#expressões-regex)
     - [Regexall](#regexall)
+  - [Documents](#documents)
 
 ## Documentation
 Terraform documentation: https://registry.terraform.io/providers/hashicorp/aws/latest/docs.
@@ -494,9 +495,17 @@ output "ec2_instances" {
 ```
 </details>
 
+## Documents
+
 Subnet documentation: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet.
 Internet gateway: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/internet_gateway
 Rout table: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table
 
+Terraform functions cidr: https://developer.hashicorp.com/terraform/language/functions/cidrsubnet
 
-https://developer.hashicorp.com/terraform/language/functions/cidrsubnet
+EKS cluster: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_cluster
+EKS Nodes: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_node_group
+
+Data sources IAM role: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_user
+
+Se o usuário não tiver acesso é necessário criar uma senha para ele e realizar login com o usuário que liberamos o acesso ao cluster EKS.

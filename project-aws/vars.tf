@@ -15,3 +15,7 @@ variable "tags" {
     Name = "fiap-terraform-aula"
   }
 }
+
+variable "instance_type" {
+  default = "t3.medium"
+}

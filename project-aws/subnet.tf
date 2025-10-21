@@ -6,5 +6,5 @@ resource "aws_subnet" "subnet_public" {
   // A aws tem de A a F, porém a I não é útil, por isso litamos 
   availability_zone       = ["us-east-1a", "us-east-1b", "us-east-1c"][count.index]
 
-    tags = var.tags
+  tags = var.tags
 }
