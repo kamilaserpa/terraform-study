@@ -137,6 +137,8 @@ Criamos o recurso [backend S3](https://developer.hashicorp.com/terraform/languag
 
 Quando inicializamos o terraform o backend é inicializado, por isso precisamos executar `$ terraform init -reconfigure`, plan e apply para implantar o backend. Podemos verificar que o conteúdo do arquivo local foi apagado e armazenado no S3.
 
+Ele não aceita nenhuma variable.
+
 ![](/assets/backend-tfstate-s3.png)
 
 
@@ -492,4 +494,9 @@ output "ec2_instances" {
 ```
 </details>
 
+Subnet documentation: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet.
+Internet gateway: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/internet_gateway
+Rout table: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table
 
+
+https://developer.hashicorp.com/terraform/language/functions/cidrsubnet
