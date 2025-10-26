@@ -32,6 +32,8 @@ Por exemplo, no lugar de clicar no console da AWS para criar uma VPC, EC2, S3, p
     - [Expressões regex](#expressões-regex)
     - [Regexall](#regexall)
   - [Documents](#documents)
+  - [Kubectl Manifest](#kubectl-manifest)
+    - [Arquivos Criados:](#arquivos-criados)
 
 ## Documentation
 Terraform documentation: https://registry.terraform.io/providers/hashicorp/aws/latest/docs.
@@ -509,3 +511,21 @@ EKS Nodes: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/res
 Data sources IAM role: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_user
 
 Se o usuário não tiver acesso é necessário criar uma senha para ele e realizar login com o usuário que liberamos o acesso ao cluster EKS.
+
+## Kubectl Manifest
+
+https://registry.terraform.io/providers/gavinbunney/kubectl/latest/docs/resources/kubectl_manifest
+
+Exemplo de deployment e service criados com manifest Kubernetes https://registry.terraform.io/providers/gavinbunney/kubectl/latest/docs/resources/kubectl_manifest#example-usage.
+
+Após realizadas as alteraçãos podemos verificar a URL do serviçe nginx no aws em EKS.
+
+- **project-aws/datasource.tf**: Adicionados data sources para EKS cluster e autenticação
+- **project-aws/eks-cluster.tf**: Adicionado security group ao cluster EKS
+- **project-aws/provider.tf**: Adicionados providers kubectl e kubernetes com configuração EKS
+
+### Arquivos Criados:
+- **project-aws/k8s-deployment.tf**: Deployment nginx com 3 réplicas
+- **project-aws/k8s-namespace.tf**: Namespace nginx para isolamento
+- **project-aws/k8s-service.tf**: Service LoadBalancer para nginx
+- **project-aws/security-group.tf**: Security group para HTTP (porta 80)

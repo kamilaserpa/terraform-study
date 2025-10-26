@@ -14,6 +14,8 @@ resource "aws_eks_cluster" "cluster" {
       aws_subnet.subnet_public[1].id,
       aws_subnet.subnet_public[2].id
     ]
+
+    security_group_ids = [aws_security_group.sg.id]
   }
 
   # Ensure that IAM Role permissions are created before and deleted
