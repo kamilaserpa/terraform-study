@@ -34,6 +34,7 @@ Por exemplo, no lugar de clicar no console da AWS para criar uma VPC, EC2, S3, p
   - [Documents](#documents)
   - [Kubectl Manifest](#kubectl-manifest)
     - [Arquivos Criados:](#arquivos-criados)
+  - [Diagram](#diagram)
 
 ## Documentation
 Terraform documentation: https://registry.terraform.io/providers/hashicorp/aws/latest/docs.
@@ -529,3 +530,7 @@ Após realizadas as alteraçãos podemos verificar a URL do serviçe nginx no aw
 - **project-aws/k8s-namespace.tf**: Namespace nginx para isolamento
 - **project-aws/k8s-service.tf**: Service LoadBalancer para nginx
 - **project-aws/security-group.tf**: Security group para HTTP (porta 80)
+
+## Diagram
+
+![Terraform Architecture — Production-Oriented Layers](assets/infrastructure.png)
